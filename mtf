@@ -1,0 +1,153 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
+
+#define N 50
+
+struct list_ {
+    char val;
+    struct list_ * next;
+};
+
+typedef struct list_ list;
+
+list * listPushFront(list * head, char val) {
+    if (!head) {
+        list * p = (list*)malloc(sizeof(list));
+        p->val = val;
+        p->next = NULL;
+        return p;
+    }
+    list * p = (list*)malloc(sizeof(list));
+    p->val = val;
+    p->next = head;
+    return p;
+}
+
+list * listPushBack(list * head, char val) {
+    if (!head) {
+        list * p = (list*)malloc(sizeof(list));
+        p->val = val;
+        p->next = NULL;
+        return p;
+    }
+    list * p = head;
+    while (p->next)
+        p = p->next;
+    list * q = (list*)malloc(sizeof(list));
+    q->val = val;
+    q->next = NULL;
+    p->next = q;
+    return head;
+}
+
+list * listFree(list * head) {
+    if (!head) {
+        return NULL;
+    }
+    list * p = head->next;
+    while (p) {
+        free(head);
+        head = p;
+        p = p->next;
+    }
+    free(head);
+    free(p);
+    return NULL;
+}
+
+void listPrint(list * head) {
+    list * p = head;
+
+    while (p) {
+        printf("%c ", p->val);
+        p = p->next;
+    }
+    printf("\n");
+}
+
+void f(char * str, char * strnew, list * dict) {
+    int i = 0;
+    char cur, c;
+    for (i = 0; i < N; ++i) {
+        c = str[i];
+        if (dict->val == c) {
+            strnew[i] = 0;
+        }
+        else {
+            cur = 1;
+            list * prev = dict;
+            list * p = dict->next;
+            while (p->val != c) {
+                prev = prev->next;
+                p = p->next;
+                cur += 1;
+            }
+            prev->next = p->next;
+            p->next = dict;
+            dict = p;
+            strnew[i] = cur;
+        }
+        //listPrint(dict);
+        //printf("\n");
+    }
+}
+
+void f2(char * str, char * strnew, list * dict) {
+    int i, j;
+    unsigned char c;
+    for (i = 0; i < N; ++i) {
+        c = str[i];
+        if (c == 0) {
+            strnew[i] = dict->val;
+        }
+        else {
+            list * prev = dict;
+            list * p = dict->next;
+            for (j = 1; j < (int)c; ++j) {
+                prev = prev->next;
+                p = p->next;
+            }
+            strnew[i] = p->val;
+            prev->next = p->next;
+            p->next = dict;
+            dict = p;
+        }
+    }
+}
+
+
+int main() {
+    srand(time(NULL));
+    list * dict = NULL, * dictconst = NULL;
+    int i, x;
+    for (i = 255; i >= 0; --i) {
+        dict = listPushFront(dict, (unsigned char)i);
+        dictconst = listPushFront(dictconst, (unsigned char)i);
+    }
+    unsigned char str[N], strnew[N];
+    //scanf("%s", str);
+    for (i = 0; i < N; ++i) {
+        x = rand() % 256;
+        str[i] = (char)x;
+        printf("%d ", x);
+    }
+    printf("\n");
+
+
+    f(str, strnew, dict);
+    for (i = 0; i < N; ++i)
+        printf("%d ", (int)strnew[i]);
+    printf("\n");
+    listFree(dict);
+
+    unsigned char strnew2[N];
+    f2(strnew, strnew2, dictconst);
+    for (i = 0; i < N; ++i)
+        printf("%d ", (int)strnew2[i]);
+    printf("\n");
+
+    listFree(dictconst);
+    return 0;
+}
