@@ -1,0 +1,65 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+void print_word(const char* word, int n) {
+	putc('\n', stderr);
+	int i;
+	for (i = 0; i < n; i++)
+	{
+		fwrite(word + n * i, 1, n, stderr);
+		putc('\n', stderr);
+	}
+}
+
+void sort_strings(char* word, int n)
+{
+	qsort(word, n, n, strcmp);
+}
+
+enum { MAX_STR_SIZE = 50 };
+
+int main()
+{
+	char str[MAX_STR_SIZE];
+	memset(str, '>', MAX_STR_SIZE);
+	fgets(str, MAX_STR_SIZE, stdin);
+	int str_size = strlen(str);
+
+	printf("%d\n", str_size);
+	str[str_size - 1] = '\0';
+	printf("%s\n", str);
+
+	char* word = malloc(sizeof(char) * str_size * str_size);
+
+	int i, j, k;
+	for (i = 0; i < str_size; i++)
+	{
+		for (j = i; j < str_size; j++)
+		{
+			*(word + str_size*i + j) = str[j - i];
+		}
+		for (k = 0; k < i; k++)
+		{
+			*(word + str_size*i + k) = str[str_size - i + k];
+		}
+	}
+
+	print_word(word, str_size); // посмотрим, как оно выглядело до сортировки
+	sort_strings(word, str_size);
+	print_word(word, str_size); // и после
+	
+	char* encoded_str = malloc(sizeof(char) * str_size);
+	for (i = 0; i < str_size; i++)
+	{
+		encoded_str[i] = word[i*str_size + (str_size - 1)];
+		printf("%c", *(encoded_str + i));
+	}
+	
+	printf("\n");
+	free(encoded_str);
+	free(word);
+	system("Pause");
+	return 0;
+}
