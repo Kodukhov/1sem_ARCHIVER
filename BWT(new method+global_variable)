@@ -1,0 +1,79 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+enum { MAX_STR_SIZE = 50 };
+char str[MAX_STR_SIZE];
+int str_size;
+
+void print_word(const int* word, int n)
+{
+	int i;
+	for (i = 0; i < n; i++)
+	{
+		printf("%d", *(word + i));
+	}
+	printf("\n");
+}
+
+int compare(int* k1, int* k2)
+{
+	int i;
+	char* str1 = malloc(sizeof(char) * str_size);
+	char* str2 = malloc(sizeof(char) * str_size);
+	for (i = 0; i < (str_size - *k1); i++)
+	{
+		*(str1 + i + *k1) = *(str+i);
+	}
+	for (i = 0; i < (str_size - *k1); i++)
+	{
+		*(str1 + i) = str[*k1 + i];
+	}
+	for (i = 0; i < (str_size - *k2); i++)
+	{
+		*(str2 + i + *k2) = str[i];
+	}
+	for (i = 0; i < (str_size - *k2); i++)
+	{
+		*(str2 + i) = str[*k2 + i];
+	}
+	int com = strcmp(str1, str2);
+	free(str1);
+	free(str2);
+	return com;
+}
+
+int main()
+{
+	int i;
+	memset(str, '>', MAX_STR_SIZE);
+	fgets(str, MAX_STR_SIZE, stdin);
+	str_size = strlen(str);
+
+	printf("%d\n", str_size);
+	str[str_size - 1] = '$';
+
+	int* word = malloc(sizeof(int) * str_size);
+	for (i = 0; i < str_size; i++)
+	{
+		*(word + i) = i;
+	}
+
+	print_word(word, str_size);
+	qsort(word, str_size, sizeof(int), compare);
+	print_word(word, str_size);
+	
+	char* encoded_str = malloc(sizeof(char) * str_size);
+	for (i = 0; i < str_size; i++)
+	{
+		*(encoded_str + i) = str[(str_size - 1 + (*(word+i))) % str_size];
+		printf("%c", *(encoded_str + i));
+	}
+	printf("\n");
+
+	free(encoded_str);
+	free(word);
+	system("Pause");
+	return 0;
+}
