@@ -1,0 +1,113 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <fcntl.h>
+
+char* str = NULL;
+int str_size;
+
+void print_word(const int* word, int n)
+{
+	int i;
+	for (i = 0; i < n; i++)
+		printf("%d", *(word + i));
+	printf("\n");
+}
+
+int compare(int* k1, int* k2)
+{
+	int i;
+	char* str1 = malloc(sizeof(char) * str_size);
+	char* str2 = malloc(sizeof(char) * str_size);
+	for (i = 0; i < (str_size - *k1); i++)
+	{
+		*(str1 + i + *k1) = str[i];
+	}
+	for (i = 0; i < (str_size - *k1); i++)
+	{
+		*(str1 + i) = str[*k1 + i];
+	}
+	for (i = 0; i < (str_size - *k2); i++)
+	{
+		*(str2 + i + *k2) = str[i];
+	}
+	for (i = 0; i < (str_size - *k2); i++)
+	{
+		*(str2 + i) = str[*k2 + i];
+	}
+	int com = strcmp(str1, str2);
+	free(str1);
+	free(str2);
+	return com;
+}
+
+int searching_of_size(FILE* a)
+{
+	int size = 0;
+	if (a != NULL)
+	{
+		fseek(a, 0, SEEK_END);
+		size = ftell(a);
+		fseek(a, 0, SEEK_SET);
+		return size;
+	}
+}
+
+int main()
+{
+	int size = 0;
+	FILE *in2;
+	in2 = fopen("input.txt", "r");
+	if (in2 != NULL)
+		size = searching_of_size(in2);
+	else
+		return 1;
+	fclose(in2);
+	//printf("size of the file =%d", size);
+	str_size = size;
+
+	FILE *out, *in;
+	out = fopen("output.txt", "w");
+	in = fopen("input.txt", "r");
+	if ((out == -1) || (in == -1))
+		return 1;
+
+	str = malloc(sizeof(char) * str_size);
+	int i;
+	for (i = 0; i < str_size; i++)
+	{
+		fscanf(in,"%c", (str + i));
+		if (*(str + i) == '\n')
+		{
+			*(str + i) = '^';
+			*(str + i + 1) = '^';
+			i++;
+		}
+	}
+	str[str_size - 1] = '$';
+	str[str_size - 2] = '$';
+
+	int* word = malloc(sizeof(int) * str_size);
+	for (i = 0; i < str_size; i++)
+	{
+		*(word + i) = i;
+	}
+
+	qsort(word, str_size, sizeof(int), compare);
+
+	char* encoded_str = malloc(sizeof(char) * str_size);
+	for (i = 0; i < str_size; i++)
+	{
+		*(encoded_str + i) = str[(str_size - 1 + (*(word + i))) % str_size];
+		fprintf(out, "%c", *(encoded_str + i));
+	}
+
+	fclose(out);
+	fclose(in);
+	free(encoded_str);
+	free(str);
+	free(word);
+	system("Pause");
+	return 0;
+}
