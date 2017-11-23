@@ -11,9 +11,7 @@ void printmat(char* word, int n)
 	for (i = 0; i < n; i++)
 	{
 		for (j = 0; j < n; j++)
-		{
 			printf("%c", *(word + i*n + j));
-		}
 		printf("\n");
 	}
 	printf("====================\n");
@@ -52,7 +50,6 @@ void rightline(char* word,char* a, int n)
 	{
 		if (*(word + i*n + (n -1)) == '$')
 		{
-			//printf("i vibral ety %d\n", (i+1));
 			for (j = 0; j < n; j++)
 			{
 				*(a + j) = *(word + i*n + j);
@@ -64,20 +61,25 @@ void rightline(char* word,char* a, int n)
 
 int main()
 {
+	FILE *out, *in;
+	out = fopen("output.txt", "w");
+	in = fopen("input.txt", "r");
+	if ((out == -1)||(in==-1))
+	{
+		return 1;
+	}
+
 	char str[MAX_STR_SIZE];
 	memset(str, '>', MAX_STR_SIZE);
-	fgets(str, MAX_STR_SIZE, stdin);
-	int str_size = strlen(str)-1;
-
+	fgets(str, MAX_STR_SIZE, in);
+	int str_size = strlen(str);
 	int i, j;
 	
 	char* string = malloc(sizeof(char)*str_size);
 	for (i = 0; i < str_size; i++)
 	{
 		*(string + i) = str[i];
-		//printf("%c", *(string + i));
 	}
-	//printf("\n");
 	
 	char* mas = malloc(sizeof(char)*str_size*str_size);
 	for (i = 0; i < str_size; i++)
@@ -91,12 +93,12 @@ int main()
 	createmat(mas, string, str_size);
 	rightline(mas, string, str_size);
 
-	for (i = 0; i < str_size; i++)
-		printf("%c", *(string + i));
-	printf("\n");
+	for (i = 0; i < (str_size-1); i++)
+		fprintf(out,"%c", *(string + i));
 	
+	fclose(out);
+	fclose(in);
 	free(mas);
 	free(string);
-	system("Pause");
 	return 0;
 }
