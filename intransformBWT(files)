@@ -1,0 +1,137 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h> 
+
+int str_size;
+
+void printmat(char* word, int n)
+{
+	int i, j;
+	for (i = 0; i < n; i++)
+	{
+		for (j = 0; j < n; j++)
+			printf("%c", *(word + i*n + j));
+		printf("\n");
+	}
+	printf("====================\n");
+}
+
+void sort_strings(char* word, int n)
+{
+	qsort(word, n, n, strcmp);
+}
+
+void add_column(char* mas, char* a, int n, int k)//добавление к (mas) столбца (а) на место (к) n-размеры
+{
+	int i;
+	for (i = 0; i < n; i++)
+	{
+		*(mas + i*n + k) = *(a + i);
+	}
+}
+
+void createmat(char* mas, char* a, int n)
+{
+	int i;
+	for (i = 0; i < n; i++)
+	{
+		//printmat(mas, n);
+		add_column(mas, a, n, (n - 1 - i));
+		//printmat(mas, n);
+		sort_strings(mas, n);
+	}
+}
+
+void rightline(char* word, char* a, int n)
+{
+	int i, j;
+	for (i = 0; i < n; i++)
+	{
+		if ((*(word + i*n + (n - 1)) == '$') && (*(word + i*n + (n - 2)) == '$'))
+		{
+			for (j = 0; j < n; j++)
+			{
+				*(a + j) = *(word + i*n + j);
+			}
+			break;
+		}
+	}
+}
+
+void print_out(const char* str, const int n, FILE* a)
+{
+	int i;
+	for (i = 0; i < (n - 2); i++)
+	{
+		if ((str[i] == '^') && (str[i + 1] == '^'))
+		{
+			fprintf(a, "\n");
+			i++;
+		}
+		else
+			fprintf(a, "%c", str[i]);
+	}
+}
+
+int searching_of_size(FILE* a)
+{
+	int size = 0;
+	if (a != NULL)
+	{
+		fseek(a, 0, SEEK_END);
+		size = ftell(a);
+		fseek(a, 0, SEEK_SET);
+		return size;
+	}
+}
+
+int main()
+{
+	int i, j;
+	int size = 0;
+	FILE *in2;
+	in2 = fopen("input.txt", "r");
+	if (in2 != NULL)
+		size = searching_of_size(in2);
+	else
+		return 1;
+	fclose(in2);
+	//printf("size of the file =%d", size);
+	str_size = size;
+
+	FILE *out, *in;
+	out = fopen("output.txt", "w");
+	in = fopen("input.txt", "r");
+	if ((out == -1) || (in == -1))
+	{
+		return 1;
+	}
+
+	char* string = malloc(sizeof(char)*str_size);
+	for (i = 0; i < str_size; i++)
+	{
+		fscanf(in, "%c", (string+i));
+		printf("%c", *(string + i));
+	}
+
+	char* mas = malloc(sizeof(char)*str_size*str_size);
+	for (i = 0; i < str_size; i++)
+	{
+		for (j = 0; j < str_size; j++)
+		{
+			*(mas + i*str_size + j) = '+';
+		}
+	}
+
+	createmat(mas, string, str_size);
+	rightline(mas, string, str_size);
+	print_out(string, str_size, out);
+
+	fclose(out);
+	fclose(in);
+	free(mas);
+	free(string);
+	system("Pause");
+	return 0;
+}
