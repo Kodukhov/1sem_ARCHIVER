@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-enum { MAX_STR_SIZE = 50 };
+enum { MAX_STR_SIZE = 100 };
 char str[MAX_STR_SIZE];
 int str_size;
 
@@ -46,13 +46,21 @@ int compare(int* k1, int* k2)
 
 int main()
 {
+	FILE *out, *in;
+	out = fopen("output.txt", "w");
+	in = fopen("input.txt", "r");
+	if ((out == -1) || (in == -1))
+	{
+		return 1;
+	}
+
 	int i;
 	memset(str, '>', MAX_STR_SIZE);
-	fgets(str, MAX_STR_SIZE, stdin);
-	str_size = strlen(str);
+	fgets(str, MAX_STR_SIZE, in);
+	str_size = strlen(str)+1;
+	str[str_size-1] = '$';
 
 	printf("%d\n", str_size);
-	str[str_size - 1] = '$';
 
 	int* word = malloc(sizeof(int) * str_size);
 	for (i = 0; i < str_size; i++)
@@ -68,10 +76,12 @@ int main()
 	for (i = 0; i < str_size; i++)
 	{
 		*(encoded_str + i) = str[(str_size - 1 + (*(word+i))) % str_size];
-		printf("%c", *(encoded_str + i));
+		fprintf(out,"%c", *(encoded_str + i));
 	}
 	printf("\n");
 
+	fclose(out);
+	fclose(in);
 	free(encoded_str);
 	free(word);
 	system("Pause");
