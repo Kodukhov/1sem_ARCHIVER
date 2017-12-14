@@ -7,13 +7,6 @@ struct pair_ {
 
 typedef struct pair_ pair;
 
-int cmp(const void * a, const void * b) {
-    pair * aa = (pair *)a;
-    pair * bb = (pair *)b;
-    if (aa->cnt && bb->cnt)
-        return (aa->cnt - bb->cnt);
-}
-
 struct listp_ {
     pair * pp;
     struct list_ * next;
