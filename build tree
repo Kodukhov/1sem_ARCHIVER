@@ -22,25 +22,16 @@ int main()
         str[i] = x;
         ++(cnt[x]->cnt); //считаем частоту
     }
-    //qsort(cnt, 256, sizeof(pair *), cmp);
     list_pair * build = NULL;
     for (i = 0; i < 256; ++i) {
         build = pair_push_sort(build, cnt[i]);
     }
     pair_print(build);
-
     while (build && build->next)
          build = build_tree(build);
-
-    pair_print(build);
-    /*tree_inf(build->pp);
-    printf("\n");
-    tree_pref(build->pp);*/
-
     for (i = 0; i < 256; ++i) {
         free(cnt[i]);
     }
-
     free(str);
     return 0;
 }
