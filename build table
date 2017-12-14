@@ -1,0 +1,57 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include "pair.h"
+#include "buildhuff.h"
+#include "list2.h"
+
+table arr[256];
+int num = 0;
+char a[256];
+
+void build_table(pair * root, int pl) {
+    if (root->left) {
+        ///добавить 0;
+        a[pl] = 0;
+        build_table(root->left, pl + 1);
+    }
+    if (root->right) {
+        ///добавить 1;
+        a[pl] = 1;
+        build_table(root->right, pl + 1);
+    }
+    if (!root->right && !root->left) {
+        ///добавить букву;
+        arr[num].val = root->val;
+        arr[num].cnt = pl;
+        int i;
+        for (i = 0; i < pl; ++i) {
+            arr[num].str[i] = a[i];
+        }
+        ++num;
+    }
+
+}
+
+int main() {
+    int N = 1000;
+    int i;
+    unsigned char x;
+    unsigned char * str = (unsigned char *)malloc(N * sizeof(unsigned char));
+    for (i = 0; i < N; ++i) {
+        x = getchar();
+        str[i] = x;
+    }
+    pair * treehuf = NULL;
+    treehuf = build_huff(str, N);
+    free(str);
+    build_table(treehuf, 0);
+    int j;
+    for (i = 0; i < 256; ++i) {
+        printf("%c: ", arr[i].val);
+        for (j = 0; j < arr[i].cnt; ++j)
+            printf("%d", (int)arr[i].str[j]);
+        printf("\n");
+    }
+    tree_free(treehuf);
+    return 0;
+}
