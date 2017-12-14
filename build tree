@@ -1,0 +1,46 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include "list.h"
+#include "pair.h"
+
+int main()
+{
+    int N = 10;
+    pair * cnt[256];
+    int i;
+    for (i = 0; i < 256; ++i) { //обнулили массив cnt
+        cnt[i] = (pair*)malloc(sizeof(pair));
+        cnt[i]->cnt = 0;
+        cnt[i]->val = (unsigned char)i;
+        cnt[i]->right = NULL;
+        cnt[i]->left = NULL;
+    }
+    unsigned char * str = (unsigned char *)malloc(N * sizeof(unsigned char));
+    int x;
+    for (i = 0; i < N; ++i) { //считываем строку
+        x = getchar(); // int getchar(void);
+        str[i] = x;
+        ++(cnt[x]->cnt); //считаем частоту
+    }
+    //qsort(cnt, 256, sizeof(pair *), cmp);
+    list_pair * build = NULL;
+    for (i = 0; i < 256; ++i) {
+        build = pair_push_sort(build, cnt[i]);
+    }
+    pair_print(build);
+
+    while (build && build->next)
+         build = build_tree(build);
+
+    pair_print(build);
+    /*tree_inf(build->pp);
+    printf("\n");
+    tree_pref(build->pp);*/
+
+    for (i = 0; i < 256; ++i) {
+        free(cnt[i]);
+    }
+
+    free(str);
+    return 0;
+}
