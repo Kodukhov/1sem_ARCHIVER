@@ -72,8 +72,8 @@ int main()
 	in = fopen("input.txt", "r");
 	if ((out == -1) || (in == -1))
 		return 1;
-
-	str = malloc(sizeof(char) * str_size);
+	
+	str = malloc(sizeof(char) * (str_size + 2));
 	int i;
 	for (i = 0; i < str_size; i++)
 	{
@@ -85,9 +85,11 @@ int main()
 			i++;
 		}
 	}
-	str[str_size - 1] = '$';
-	str[str_size - 2] = '$';
-
+	
+	str[str_size] = '$';
+	str[str_size + 1] = '$';
+	str_size = str_size + 2;
+	
 	int* word = malloc(sizeof(int) * str_size);
 	for (i = 0; i < str_size; i++)
 	{
