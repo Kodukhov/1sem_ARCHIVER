@@ -9,7 +9,7 @@ typedef struct pair_ pair;
 
 struct listp_ {
     pair * pp;
-    struct list_ * next;
+    struct listp_ * next;
 };
 
 typedef struct listp_ list_pair;
