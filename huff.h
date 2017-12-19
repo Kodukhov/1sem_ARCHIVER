@@ -7,7 +7,7 @@ int huff_compress(unsigned char * str, int N, unsigned char * strnew, table * ar
     for (i = 0; i < N; ++i) {
         unsigned char c = str[i];
         j = 0;
-        while (arr[j].val != c)
+        while (j < 256 && arr[j].val != c)
             ++j;
         curnum = j;
         for (k = 0; k < arr[curnum].cnt; ++k) {
